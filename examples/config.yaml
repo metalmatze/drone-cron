@@ -2,6 +2,12 @@ jobs:
 # build drone/drone every hour at 0min 0s for master branch
 - name: drone/drone
   schedule: '0 0 * * * *'
+# build drone/drone every hour at 0min 0s with parameters
+- name: drone/drone
+  params:
+    foo: bar
+    baz: bar
+  schedule: '0 0 * * * *'
 # build drone/drone-cli every hour at 0min 0s for develop branch
 - name: drone/drone-cli
   branch: develop
