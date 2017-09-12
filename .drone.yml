@@ -1,0 +1,23 @@
+workspace:
+  base: /go
+  path: src/github.com/metalmatze/drone-cron
+
+pipeline:
+  test:
+    image: golang:1.9
+    commands:
+      - go test -v ./...
+
+  build:
+    image: golang:1.9
+    commands:
+      - CGO_ENABLED=0 go build -v -ldflags '-w -extldflags '-static''
+
+  docker:
+    image: plugins/docker
+    repo: metalmatze/drone-cron
+    secrets: [ docker_username, docker_password ]
+    tag: [ latest ]
+    when:
+      branch: master
+      event: push
