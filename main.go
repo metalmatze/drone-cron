@@ -24,9 +24,13 @@ type ConfigJob struct {
 }
 
 func main() {
+	configPath := os.Getenv("DRONE_CRON_CONFIG")
 	host := strings.TrimSuffix(os.Getenv("DRONE_SERVER"), "/")
 	token := os.Getenv("DRONE_TOKEN")
 
+	if configPath == "" {
+		configPath = "./config.yaml"
+	}
 	if host == "" {
 		log.Fatal("Set DRONE_SERVER which is currently empty")
 	}
@@ -36,7 +40,7 @@ func main() {
 
 	// Reading & unmarshalling the config
 
-	config, err := ioutil.ReadFile("config.yaml")
+	config, err := ioutil.ReadFile(configPath)
 	if err != nil {
 		log.Fatal(err)
 	}
