@@ -1,0 +1,4 @@
+jobs:
+# build drone/drone every hour at 0min 0s
+- name: drone/drone
+  schedule: '0 0 * * * *'
