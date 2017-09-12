@@ -20,6 +20,7 @@ type ConfigJobs struct {
 
 type ConfigJob struct {
 	Name     string `json:"name"`
+	Branch   string `json:"branch"`
 	Schedule string `json:"schedule"`
 }
 
@@ -71,7 +72,7 @@ func main() {
 	log.Println("Adding jobs with their schedule:")
 	for _, job := range jobs.Jobs {
 		log.Println(job.Schedule, job.Name)
-		c.AddFunc(job.Schedule, cs.BuildStart(job.Name))
+		c.AddFunc(job.Schedule, cs.BuildStart(job.Name, job.Branch))
 	}
 
 	go c.Run()
@@ -89,7 +90,7 @@ type CronScheduler struct {
 	client drone.Client
 }
 
-func (cs *CronScheduler) BuildStart(repo string) cron.FuncJob {
+func (cs *CronScheduler) BuildStart(repo, branch string) cron.FuncJob {
 	splits := strings.Split(repo, "/")
 	if len(splits) != 2 {
 		log.Println("failed to split repo name:", repo)
@@ -97,7 +98,10 @@ func (cs *CronScheduler) BuildStart(repo string) cron.FuncJob {
 	owner, name := splits[0], splits[1]
 
 	return func() {
-		lastBuild, err := cs.client.BuildLast(owner, name, "master") // TODO: Make branch configurable
+		if branch == "" {
+			branch = "master"
+		}
+		lastBuild, err := cs.client.BuildLast(owner, name, branch) // TODO: Make branch configurable
 		if err != nil {
 			log.Printf("failed to get last build: %v\n", err)
 			return
