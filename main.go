@@ -102,7 +102,7 @@ func (cs *CronScheduler) BuildStart(repo, branch string, params map[string]strin
 		if branch == "" {
 			branch = "master"
 		}
-		lastBuild, err := cs.client.BuildLast(owner, name, branch) // TODO: Make branch configurable
+		lastBuild, err := cs.client.BuildLast(owner, name, branch)
 		if err != nil {
 			log.Printf("failed to get last build: %v\n", err)
 			return
